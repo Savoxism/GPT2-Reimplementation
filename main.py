@@ -6,6 +6,7 @@ def fibo_1(n):
 
     return fibo_1(n-1) + fibo_1(n-2)
 
+# print(fibo_1(23))
 
 def fibo_memo(n):
     memo = [-1] * (n+1)
