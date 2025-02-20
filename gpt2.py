@@ -6,7 +6,6 @@ import math
 
 
 # ---------------------------MODEL CONSTRUCTION-----------------------------------#
-
 class CausalSelfAttention(nn.Module):
     def __init__(self, config):
         super().__init__()

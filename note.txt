@@ -1,0 +1,5 @@
+1) In GPT2, the positional embeddings are learnable, not fixed like the original transformers 
+
+2) For GPT2, layernorms are applied before attention and ffn
+
+3) Multi-head attention allows the model to capture different aspects of the input sequence by having multiple attention heads, each learning different representations. Each attention head processes a hs-dimensional subspace of the full embedding independently, and their results are later concatenated back into a C-dimensional vector.
