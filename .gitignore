@@ -1,3 +1,8 @@
+# project wide
+huggingface_cache
+edu_fineweb10B
+old
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

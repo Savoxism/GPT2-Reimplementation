@@ -108,13 +108,13 @@ for step in range(max_steps):
 ✅ Splits tokenized data into .npy shards (each 100M tokens).
 ✅ Saves the first shard as "val" (validation set), the rest as "train".
 
-25
+25) shuffling documents
 
-26
+26) fix compile error
 
-27
+27) finetuning in chat format -> conversational finetuning
 
-
+28) faster code in C/CUDA
 
 
 
