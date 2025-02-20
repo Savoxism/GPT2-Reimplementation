@@ -28,7 +28,7 @@ for i in range(50):
     optimizer.step()
     print(f"step {i}, loss: {loss.item()}")
 
-8) code for fetching the next batch of training data ->>> TRAIN_DATALOADER
+8) code for fetching the NEXT BATCH of training data ->>> TRAIN_DATALOADER
 def next_batch(self):
         B, T = self.B, self.T
         buf = self.tokens[self.current_position:self.current_position + B*T + 1] # extract a contiguous chunk of tokens from self.tokens, starting at self.current_position
@@ -41,28 +41,48 @@ def next_batch(self):
             self.current_position = 0
         return x, y
 
-9) Sometimes, the loss that we gained was from basically deleting the usage of tokens that never occur, probably most of the loss gain
-
+9) Sometimes, the loss that we gained was from basically deleting the usage of tokens that never occur, probably most of the loss gain -> false realization
 
 10) weight initialization for linear layers, embeddings, and residual paths
 std *= (2 * self.config.n_layer) ** -0.5 2 layers that form a residual path computation, from attention and from mlp 
+-> avoid bias
 
-11)
+11) Different floating point precisions representations: FP16 and BF16, mostly used for AI large scale training, INT8 is used for inference. The fewer bits of representations, the easier to move them around -> the bandwidth is equally very important, sometimes the computations are extremely fast but the data fetching from memory is not fast enough.
+
+12) Understand Tensor Cores (matrix decomposition), torch.autocast -> faster
+
+13) for the smallest gpt2 model 124M, the largest matrix mul is from the top classifer layer
+
+14) mixed precision, conversion from fp16 to bf16 incurs a minimal enhancement, gradient scalers (complicating) -> trade off fast & precise
+
+15) torch.compile() == gcc for c++ -> super useful and powerful, kernel fusion, Python Overhead -> much faster
+
+16) flash attention: a kernel fusion operation -> faster
+
+17) nice / ugly numbers => Simple yet so effective
+
+18) hyperparam tuning, gradient clipping, learning rate scheduler 
+
+19) batch size scheduler (useful in later stages of training), weight decay, fusedadamW 
+Fused Adam is a high-performance, optimized implementation of the Adam optimizer that combines multiple operations into a single fused kernel for faster and more memory-efficient execution on GPUs.
+dont apply weight decay on 1-dimensional tensors 
+
+20) gradient accumulation => enable large batch size with limited GPU processing power  ===>> accum = sum in loss
+
+21) distributed data parallel 
+
+22
 
 
+23
 
+24
 
-12)
+25
 
+26
 
-
-
-
-13)
-
-
-
-
+27
 
 
 
