@@ -69,14 +69,44 @@ dont apply weight decay on 1-dimensional tensors
 
 20) gradient accumulation => enable large batch size with limited GPU processing power  ===>> accum = sum in loss
 
-21) distributed data parallel 
+21) distributed data parallel -> stride out the procceses in the train dataloader, understand ddp rank local rank, world size
 
-22
+22) Training loop before ddp
+optimizer = model.configure_optimizers(weight_decay=0.01, learning_rate=6e-4, device=device)
 
+for step in range(max_steps):
+    t0 = time.time()
+    optimizer.zero_grad()
+    loss_accum = 0.0
+    for micro_step in range(grad_accum_steps):
+        x, y = train_loader.next_batch()
+        x, y = x.to(device), y.to(device)
+        with torch.autocast(device_type = device, dtype=torch.bfloat16):
+            logits, loss = model(x, y)
+        # scale the loss to account for gradient accumulation, because we want to average the gradients, not sum them
+        loss = loss / grad_accum_steps
+        loss_accum += loss.detach()
+        loss.backward()
+    norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+    # determine learning rate
+    lr = get_lr(step)
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr    
+    optimizer.step()
+    # torch.cuda.synchronize() # disable if cuda is not available
+    t1 = time.time()
+    dt = (t1 - t0) * 1000 
+    tokens_processed = train_loader.B * train_loader.T * grad_accum_steps
+    tokens_per_sec = tokens_processed / dt
+    print(f"step {step:4d} | lr: {lr:.4e} | loss: {loss_accum.item():.6f} | norm: {norm} | time: {dt:.2f}ms | tok/sec: {tokens_per_sec:.2f}")
 
-23
+23) GPT2 is trained on Reddit 
 
-24
+24) ✅ Downloads the FineWeb-Edu dataset.
+✅ Tokenizes text using GPT-2 tokenizer (tiktoken).
+✅ Processes data in parallel using multiprocessing.
+✅ Splits tokenized data into .npy shards (each 100M tokens).
+✅ Saves the first shard as "val" (validation set), the rest as "train".
 
 25
 
