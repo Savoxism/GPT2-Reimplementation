@@ -3,3 +3,74 @@
 2) For GPT2, layernorms are applied before attention and ffn
 
 3) Multi-head attention allows the model to capture different aspects of the input sequence by having multiple attention heads, each learning different representations. Each attention head processes a hs-dimensional subspace of the full embedding independently, and their results are later concatenated back into a C-dimensional vector.
+
+4) When we calculate the loss, the label is just the token to our right.
+
+5) param sharing. In the og paper attention is all you need, author mentioned "In our model, we share the same weight matrix between the two embedding layers and the pre-softmax linear transformation."
+
+6) code for moving to GPU
+device = "cpu"
+if torch.cuda.is_available():
+    device = "cuda"
+elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    device = "mps"
+print("using device:", device)
+
+7) Code for training, the simplest form
+model = GPT(GPTConfig())
+model.to(device)
+
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+for i in range(50):
+    optimizer.zero_grad()
+    logits, loss = model(x, y)
+    loss.backward()
+    optimizer.step()
+    print(f"step {i}, loss: {loss.item()}")
+
+8) code for fetching the next batch of training data ->>> TRAIN_DATALOADER
+def next_batch(self):
+        B, T = self.B, self.T
+        buf = self.tokens[self.current_position:self.current_position + B*T + 1] # extract a contiguous chunk of tokens from self.tokens, starting at self.current_position
+        x = (buf[:-1]).view(B, T)
+        y = (buf[1:]).view(B, T)
+        # advance the position in the tensor
+        self.current_position += B * T
+        # if loading the next batch would be out of bound, reset
+        if self.current_position + B * T + 1 > len(self.tokens):
+            self.current_position = 0
+        return x, y
+
+9) Sometimes, the loss that we gained was from basically deleting the usage of tokens that never occur, probably most of the loss gain
+
+
+10) weight initialization for linear layers, embeddings, and residual paths
+std *= (2 * self.config.n_layer) ** -0.5 2 layers that form a residual path computation, from attention and from mlp 
+
+11)
+
+
+
+
+12)
+
+
+
+
+
+13)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
