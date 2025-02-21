@@ -2,8 +2,8 @@ import os
 import multiprocessing as mp
 import numpy as np
 import tiktoken
-from datasets import load_dataset  # pip install datasets
-from tqdm import tqdm  # pip install tqdm
+from datasets import load_dataset  
+from tqdm import tqdm  
 import dotenv
 from huggingface_hub import login
 
@@ -16,9 +16,16 @@ local_dir = "edu_fineweb10B"
 remote_name = "sample-10BT"
 shard_size = int(1e8)  # 100M tokens per shard, total of 100 shards
 
+# Set base directory on Mac
+base_dir = "/Users//nguyenphuan//Documents//Github//GPT2-Reimplementation"
+
+# Set Hugging Face cache directories
+os.environ["HF_HOME"] = os.getenv("HF_HOME", f"{base_dir}//huggingface_cache")
+os.environ["HF_DATASETS_CACHE"] = os.getenv("HF_DATASETS_CACHE", f"{base_dir}//huggingface_cache//datasets")
+
 # Set the Hugging Face cache directory to your current working directory
-os.environ["HF_HOME"] = os.getenv("HF_HOME", os.path.join(os.getcwd(), "huggingface_cache"))
-os.environ["HF_DATASETS_CACHE"] = os.getenv("HF_DATASETS_CACHE", os.path.join(os.getcwd(), "huggingface_cache", "datasets"))
+# os.environ["HF_HOME"] = os.getenv("HF_HOME", os.path.join(os.getcwd(), "huggingface_cache"))
+# os.environ["HF_DATASETS_CACHE"] = os.getenv("HF_DATASETS_CACHE", os.path.join(os.getcwd(), "huggingface_cache", "datasets"))f
 
 # Create the cache directory in the current working directory if it doesn't exist yet
 DATA_CACHE_DIR = os.path.join(os.getcwd(), local_dir)

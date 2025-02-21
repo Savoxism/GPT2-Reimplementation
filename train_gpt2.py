@@ -7,10 +7,8 @@ import inspect
 import os
 import time
 from hellaswag import render_example, iterate_examples
-
 # -----------------------------------------------------------
 class CausalSelfAttention(nn.Module):
-    
     def __init__(self, config):
         super().__init__()
         assert config.n_embd % config.n_head == 0
@@ -120,7 +118,7 @@ class GPT(nn.Module):
         B, T = idx.size()
         assert T <= self.config.block_size, f"Cannot forward sequence of length {T}, block size is only {self.config.block_size}"
         # forward the tokens and positional embeddings
-        pos = torch.arange(0, T, dtype=torch.long, device=idx.device) #(T)
+        pos = torch.arange(0, T, dtype=torch.long, device=idx.device) # (T)
         pos_emb = self.transformer.wpe(pos) #(T, n_embd)
         tok_emb = self.transformer.wte(idx) #(B, T, n_embd)
         x = pos_emb + tok_emb
@@ -207,7 +205,7 @@ class GPT(nn.Module):
         optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=(0.9, 0.95), eps=1e-8, fused=use_fused)
         return optimizer
         
-# -----------------------------------------------------------
+# -----------------------------------------------------------#
 import tiktoken      
 import numpy as np
 
@@ -316,6 +314,7 @@ else:
     print("using device:", device)
         
 device_type = "cuda" if device.startswith("cuda") else "cpu"
+
 torch.manual_seed(1337)
 if torch.cuda.is_available():
     torch.cuda.manual_seed(1337)
