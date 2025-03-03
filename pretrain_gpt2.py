@@ -184,10 +184,10 @@ class GPT(nn.Module):
         return model
     
     def configure_optimizers(self, weight_decay, learning_rate, device_type):
-        # start with all candidate params (those requiring gradients)
+        # Start with all candidate params (those requiring gradients)
         param_dict= {pn: p for pn, p in self.named_parameters()}
         param_dict = {pn: p for pn, p in param_dict.items() if p.requires_grad}
-        # create optim groups. Any params that is 2D will be weight decay, otherwise no weight decay
+        # Create optim groups. Any params that is 2D will be weight decay, otherwise no weight decay
         decay_params = [p for n, p in param_dict.items() if p.dim() >= 2]
         nodecay_params = [p for n, p in param_dict.items() if p.dim() < 2]  
         optim_groups = [
